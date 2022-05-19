@@ -8,7 +8,14 @@ public class Collection : MonoBehaviour
     {
         if (transform.childCount == 0)
         {
-            UnityEngine.SceneManagement.SceneManager.LoadScene("Space");
+            StartCoroutine(goose());
+            IEnumerator goose()
+            {
+                Typewritter.tw.queue.Add("Congratulations, now lets get to the moon");
+                yield return new WaitForSeconds(3);
+                UnityEngine.SceneManagement.SceneManager.LoadScene("Space");
+            }
         }
+        GameObject.Find("HUD").transform.Find("Remaining").GetComponent<TMPro.TMP_Text>().text = "Parts remaining: " + transform.childCount;
     }
 }

@@ -58,9 +58,19 @@ public class Controls : MonoBehaviour
 
     void Update()
     {
-        float s = 5f;
+        // shoot
+        if (Input.GetMouseButtonDown(0))
+        {
+            GameObject created =GameObject.Instantiate(Resources.Load<GameObject>("bulletsmall"), transform.position, Quaternion.identity);
+            created.GetComponent<Projectile>().dir = transform.forward;
+        }
 
-        power -= 0.025f * Time.deltaTime;
+
+        // speed
+        float s = 10f;
+
+        // power
+        power -= 0.010f * Time.deltaTime;
         if (power < 0.05f)
             s = 1f;
         if (Vector3.Distance(transform.position, GameObject.Find("charger").transform.position) < 6)
@@ -72,7 +82,7 @@ public class Controls : MonoBehaviour
             if (stamina > 0.1f)
             {
                 s *= 2f;
-                stamina -= 0.25f * Time.deltaTime;
+                stamina -= 0.05f * Time.deltaTime;
                 if (regen == null == false)
                     StopCoroutine(regen);
             }
