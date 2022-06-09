@@ -67,14 +67,34 @@ public class Controls : MonoBehaviour
 
 
         // speed
-        float s = 10f;
+        float s = 5f;
+        //float s = 500f;
 
-        // power
+        // battery left & charge
         power -= 0.010f * Time.deltaTime;
         if (power < 0.05f)
             s = 1f;
-        if (Vector3.Distance(transform.position, GameObject.Find("charger").transform.position) < 6)
-            power += 0.1f * Time.deltaTime;
+
+
+        bool nextToCharger = false;
+        foreach(GameObject c in GameObject.FindObjectsOfType<GameObject>())
+        {
+            if (c.name.StartsWith("charger") == false)
+                continue;
+
+            if (Vector3.Distance(transform.position, c.transform.position) < 6)
+            {
+                nextToCharger = true;
+                if (Input.GetKey(KeyCode.R))
+                {
+                    power += 0.1f * Time.deltaTime;
+                    c.GetComponent<Charger>().ChargeLeft -= 2.5f * Time.deltaTime;
+                    GameObject.Find("HUD").transform.Find("ChargePrompt").Find("Left").GetComponent<TMPro.TMP_Text>().text = c.GetComponent<Charger>().ChargeLeft.ToString();
+                }
+            }
+        }
+        GameObject.Find("HUD").transform.Find("ChargePrompt").gameObject.SetActive(nextToCharger);
+        
 
         // movement
         if (Input.GetKey(KeyCode.LeftShift))
@@ -107,15 +127,19 @@ public class Controls : MonoBehaviour
 
         Rigidbody rb = GetComponent<Rigidbody>();
 
-        
+
         if (Input.GetKey(KeyCode.W))
-            transform.position += transform.forward * s * Time.deltaTime;
+            //rb.position += transform.forward * s * Time.deltaTime;
+            rb.AddForce(transform.forward * s);
         if (Input.GetKey(KeyCode.S))
-            transform.position += -transform.forward * s * Time.deltaTime;
+            //rb.position += -transform.forward * s * Time.deltaTime;
+            rb.AddForce(-transform.forward * s);
         if (Input.GetKey(KeyCode.D))
-            transform.position += transform.right * s * Time.deltaTime;
+            //rb.position += transform.right * s * Time.deltaTime;
+            rb.AddForce(transform.right * s);
         if (Input.GetKey(KeyCode.A))
-            transform.position += -transform.right * s * Time.deltaTime;
+            //rb.position += -transform.right * s * Time.deltaTime;
+            rb.AddForce(-transform.right * s);
 
         // jump
         if (Physics.Raycast(transform.position, Vector3.down, 1.5f))
