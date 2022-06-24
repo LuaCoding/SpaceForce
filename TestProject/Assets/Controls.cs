@@ -58,14 +58,6 @@ public class Controls : MonoBehaviour
 
     void Update()
     {
-        // shoot
-        if (Input.GetMouseButtonDown(0))
-        {
-            GameObject created =GameObject.Instantiate(Resources.Load<GameObject>("bulletsmall"), transform.position, Quaternion.identity);
-            created.GetComponent<Projectile>().dir = transform.forward;
-        }
-
-
         // speed
         float s = 5f;
         //float s = 500f;
@@ -141,22 +133,69 @@ public class Controls : MonoBehaviour
             //rb.position += -transform.right * s * Time.deltaTime;
             rb.AddForce(-transform.right * s);
 
-        // jump
-        if (Physics.Raycast(transform.position, Vector3.down, 1.5f))
-            LastFloored = transform.position;
 
-        if (Input.GetKeyDown(KeyCode.Space) && Vector3.Distance(transform.position, LastFloored) < 1f)
-            GetComponent<Rigidbody>().AddForce(Vector3.up * 8, ForceMode.Impulse);
+        Transform cam = Camera.main.transform;
 
         // body
         if (Input.GetAxis("Mouse X") > 0)
-            transform.Rotate(0, (600 * Mathf.Abs(Input.GetAxis("Mouse X")) * Time.deltaTime), 0);
+        {
+            transform.eulerAngles += new Vector3(0, (600 * Mathf.Abs(Input.GetAxis("Mouse X")) * Time.deltaTime), 0);
+            //transform.Rotate(0, (600 * Mathf.Abs(Input.GetAxis("Mouse X")) * Time.deltaTime), 0);
+            //cam.Rotate(0, (600 * Mathf.Abs(Input.GetAxis("Mouse X")) * Time.deltaTime), 0);
+        }
         if (Input.GetAxis("Mouse X") < 0)
-            transform.Rotate(0, -(600 * Mathf.Abs(Input.GetAxis("Mouse X")) * Time.deltaTime), 0);
+        {
+            transform.eulerAngles += new Vector3(0, -(600 * Mathf.Abs(Input.GetAxis("Mouse X")) * Time.deltaTime), 0);
+            //transform.Rotate(0, -(600 * Mathf.Abs(Input.GetAxis("Mouse X")) * Time.deltaTime), 0);
+            //cam.Rotate(0, -(600 * Mathf.Abs(Input.GetAxis("Mouse X")) * Time.deltaTime), 0);
+        }
+
+        //if (transform.eulerAngles.x > 90)
+        //  transform.eulerAngles -= new Vector3(1, 0, 0);
+        //if (transform.eulerAngles.x < -90)
+        //  transform.eulerAngles += new Vector3(1, 0, 0);
+
+        //if (transform.eulerAngles.y > 90)
+        //  transform.eulerAngles -= new Vector3(0, 1, 0);
+        //if (transform.eulerAngles.y < -90)
+        //  transform.eulerAngles += new Vector3(0, 1, 0);
+
+        //if (transform.eulerAngles.z > 90)
+        //  transform.eulerAngles -= new Vector3(0, 0, 1);
+        //if (transform.eulerAngles.z < -90)
+        //transform.eulerAngles += new Vector3(0, 0, 1);
+
+        RaycastHit hit;
+        Physics.Raycast(transform.position, new Vector3(0, -1, 0), out hit, 10f);
+
+        Debug.DrawLine(hit.point, hit.point + hit.normal * 3, Color.red);
+
+
+        Vector3 current = transform.Find("model").rotation.eulerAngles;
+        Quaternion target = Quaternion.LookRotation(-transform.forward, hit.normal);
+        Vector3 next = new Vector3();
+
+        /*
+        if (target.x < current.x)
+            next.x = current.x - (current.x - target.x) / 2f;
+        if (target.x > current.x)
+            next.x = current.x + (target.x - current.x) / 2f;
+        */
+        if (target.y < current.y)
+            next.y = current.y - (current.y - target.y) / 2f;
+        if (target.y > current.y)
+            next.y = current.y + (target.y - current.y) / 2f;
+
+        if (target.z < current.z)
+            next.z = current.z - (current.z - target.z) / 2f;
+        if (target.z > current.z)
+            next.z = current.z + (target.z - current.z) / 2f;
+
+        
+        transform.Find("model").rotation = Quaternion.RotateTowards(transform.Find("model").rotation, target, 1f);
 
 
         // cam
-        Transform cam = transform.Find("Main Camera");
 
         if (Input.GetAxis("Mouse Y") < 0)
         {
