@@ -11,8 +11,10 @@ public class Typewritter : MonoBehaviour
         t.text = "";
         tw = this;
 
-        queue.Add("We need to repair this spaceship to get to space");
-        queue.Add("Collect all ship parts");
+        queue.Add("We need to repair our shuttle to get to space");
+        queue.Add("Collect all parts (green glow)");
+        queue.Add("If you run out of power, you will slow down to a crawl");
+        queue.Add("Use coils (yellow glow) to recharge");
 
         StartCoroutine(queuewait());
     }
@@ -21,7 +23,7 @@ public class Typewritter : MonoBehaviour
     {
         while(true)
         {
-            yield return new WaitForSeconds(1);
+            yield return new WaitForSeconds(0.5f);
             if (active == false && queue.Count>0)
             {
                 message(queue[0]);
@@ -42,14 +44,14 @@ public class Typewritter : MonoBehaviour
             t.text = "";
             while(remaining.Length > 0)
             {
-                yield return new WaitForSeconds(0.03f);
+                yield return new WaitForSeconds(0.015f);
                 t.text += remaining[0];
                 remaining = remaining.Remove(0,1);
             }
-            yield return new WaitForSeconds(2);
+            yield return new WaitForSeconds(1f);
             while(t.text.Length>0)
             {
-                yield return new WaitForSeconds(0.01f);
+                yield return new WaitForSeconds(0.005f);
                 t.text = t.text.Remove(t.text.Length - 1,1);
             }
             yield return new WaitForSeconds(0.5f);

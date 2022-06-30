@@ -53,7 +53,7 @@ public class Controls : MonoBehaviour
 
     float amount = 0;
 
-    
+
     Coroutine regen;
 
     void Update()
@@ -69,7 +69,7 @@ public class Controls : MonoBehaviour
 
 
         bool nextToCharger = false;
-        foreach(GameObject c in GameObject.FindObjectsOfType<GameObject>())
+        foreach (GameObject c in GameObject.FindObjectsOfType<GameObject>())
         {
             if (c.name.StartsWith("charger") == false)
                 continue;
@@ -86,7 +86,7 @@ public class Controls : MonoBehaviour
             }
         }
         GameObject.Find("HUD").transform.Find("ChargePrompt").gameObject.SetActive(nextToCharger);
-        
+
 
         // movement
         if (Input.GetKey(KeyCode.LeftShift))
@@ -191,7 +191,7 @@ public class Controls : MonoBehaviour
         if (target.z > current.z)
             next.z = current.z + (target.z - current.z) / 2f;
 
-        
+
         transform.Find("model").rotation = Quaternion.RotateTowards(transform.Find("model").rotation, target, 1f);
 
 
